@@ -1,0 +1,31 @@
+{
+  "applications": [
+    {
+      "name": "Calendar",
+      "description": "App for calendar management",
+      "type": "Module",
+      "intents": [
+        {
+          "name": "Create remind",
+          "key_phrases": [
+            "remind"
+          ],
+          "parameters": [
+            {
+              "name": "Date",
+              "data_type": "DateTime",
+              "obligatory": true,
+              "question": "When should I remind you?"
+            },
+            {
+              "name": "Subject",
+              "data_type": "str",
+              "obligatory": true,
+              "question": "What should I remind you?"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
