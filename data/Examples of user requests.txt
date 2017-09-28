@@ -1,0 +1,4 @@
+Masha,who is Barack Obama?
+Home, set up temperature on 25 degree.
+Calendar, create a meeting with Jim on Thursday at 4PM.
+Calendar, remind to call Misha tomorrow.
