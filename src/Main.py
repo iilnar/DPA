@@ -1,15 +1,15 @@
+from configparser import ConfigParser
+from application.application_config import load_config
 from assistant import Assistant
 from language.models.en.english_language_model import EnglishLanguageModel
-from application_config import load_config
-from configparser import ConfigParser
 
 
 def start():
     config_parser = ConfigParser()
-    config_parser.read("config.ini", encoding="utf-8")
+    config_parser.read("configs/config.ini", encoding="utf-8")
     default_config = config_parser["DEFAULT"]
 
-    language_model = EnglishLanguageModel()
+    language_model = EnglishLanguageModel(default_config)
     app_dict = load_config("ApplicationConfig.json")
     assistant = Assistant(language_model, app_dict, default_config)
     print("Assistant starts work")

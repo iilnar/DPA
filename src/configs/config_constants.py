@@ -1,0 +1,2 @@
+CoreNLPServerAddress = "CoreNLPServerAddress"
+HistoryFilePath = "HistoryFilePath"

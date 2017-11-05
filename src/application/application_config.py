@@ -3,6 +3,7 @@ from application.application import Application
 from application.application import IntegrationType
 from application.intent import Intent
 from application.parameter import Parameter
+from application.data_type import DataType
 
 APPLICATIONS_TAG = "applications"
 APPLICATION_NAME_TAG = "name"
@@ -39,6 +40,7 @@ def load_config(path_str):
             for parameter in intent[INTENT_PARAMETERS_TAG]:
                 param_name = parameter[PARAMETER_NAME_TAG]
                 param_data_type = parameter[PARAMETER_TYPE_TAG]
+                param_data_type = DataType[param_data_type.upper()]
                 param_obligatory = parameter[PARAMETER_OBLIGATORY_TAG]
                 param_question = parameter.get(PARAMETER_QUESTION_TAG, None)
                 param_inst = Parameter(param_name, param_data_type, obligatory_bool=param_obligatory,

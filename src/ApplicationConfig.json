@@ -13,7 +13,7 @@
           "parameters": [
             {
               "name": "Date",
-              "data_type": "DateTime",
+              "data_type": "Date",
               "obligatory": true,
               "question": "When should I remind you?"
             },
