@@ -1,4 +1,6 @@
 from pathlib import Path
+from configs.config_constants import HistoryFilePath
+from form.form import Form
 
 
 class Assistant:
@@ -9,22 +11,45 @@ class Assistant:
         self.__history = []
         self.__config = config
 
-    def process_intent(self, user_request_str):
+    def process_request(self, user_request_str):
         request_information = self.language_model.parse(user_request_str)
         if request_information.is_intent():
             app = self.__extract_app(request_information)
-            intent_description = app.get_intent(request_information.get_intent())
+            if app is None:
+                answer = "Sorry, I didn't understand you. Please try it again"
+            else:
+                answer = self.__process_intent(app, request_information)
         else:
-            pass
-        answer = "Done"
+            # Here we must to handle questions and answers
+            answer = "Done"
         self.__history.append((user_request_str, answer))
         return answer
 
     def __extract_app(self, request_information):
-        return self.application_dict[request_information.get_app_name()]
+        lemma = request_information.get_intent().get_lemma()
+        app = None
+        if lemma == "remind":
+            app = self.application_dict["Calendar"]
+            request_information.set_app_name("Calendar")
+        return app
+
+    def __process_intent(self, app, request_information):
+        lemma = request_information.get_intent().get_lemma()
+        intent_description = app.get_intent(lemma)
+        form = Form(intent_description)
+        answer = form.process(request_information)
+        if form.is_finish():
+            answer = self.__execute_request(app, form.get_parameters_value())
+        else:
+            # save_form
+            pass
+        return answer
+
+    def __execute_request(self, app, parameters_dict):
+        return "Done"
 
     def stop(self):
-        path = Path(self.__config["HistoryFilePath"])
+        path = Path(self.__config[HistoryFilePath])
         file = None
         try:
             if path.exists():

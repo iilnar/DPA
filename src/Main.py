@@ -17,7 +17,7 @@ def start():
     print("For finish write 'exit'")
     request = input("Denis: ")
     while (request != "exit"):
-        answer = assistant.process_intent(request)
+        answer = assistant.process_request(request)
         print("Masha: " + answer)
         request = input("User: ")
 
