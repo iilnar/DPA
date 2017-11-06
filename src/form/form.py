@@ -3,7 +3,8 @@ from language.models.named_entity_recognition import NERType
 
 
 class Form:
-    def __init__(self, intent_description):
+    def __init__(self, app, intent_description):
+        self.__app = app
         self.__int_desc = intent_description
         self.__parameters_value = dict()
         self.__is_finish = False
@@ -37,3 +38,6 @@ class Form:
 
     def is_finish(self):
         return self.__is_finish
+
+    def get_app(self):
+        return self.__app

@@ -1,15 +1,15 @@
 from language.models.part_of_speech import POS
-
+from language.models.request_type import RequestType
 
 class RequestInformation:
-    def __init__(self, tokens_list, intent, is_intent=True):
-        self.__is_intent = is_intent
+    def __init__(self, tokens_list, intent, rtype):
+        self.__type = rtype
         self.__tokens_list = tokens_list
         self.__intent = intent
         self.__app_name = None
 
-    def is_intent(self):
-        return self.__is_intent
+    def get_type(self):
+        return self.__type
 
     def get_tokens_list(self):
         return self.__tokens_list
@@ -28,11 +28,15 @@ class LanguageModel:
     def parse(self, string):
         string = self.__preprocess_text(string)
         tokens_list = self.tokenize(string)
-        verb = self.__find_first_verb(tokens_list)
-        if verb is None:
-            obj = RequestInformation(tokens_list, None, is_intent=False)
+        is_question = self.is_question(tokens_list)
+        if is_question:
+            obj = RequestInformation(tokens_list, None, rtype=RequestType.QUESTION)
         else:
-            obj = RequestInformation(tokens_list, verb)
+            verb = self.__find_first_verb(tokens_list)
+            if verb is None:
+                obj = RequestInformation(tokens_list, None, rtype=RequestType.ANSWER)
+            else:
+                obj = RequestInformation(tokens_list, verb, rtype=RequestType.ACTION)
         return obj
 
     def tokenize(self, string):
@@ -51,4 +55,7 @@ class LanguageModel:
         raise NotImplementedError()
 
     def convert_pos(self, pos_str):
+        raise NotImplementedError()
+
+    def is_question(self, tokens_list):
         raise NotImplementedError()

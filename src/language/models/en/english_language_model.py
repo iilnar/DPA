@@ -19,6 +19,8 @@ class EnglishLanguageModel(LanguageModel):
                         "PERSON": NERType.PERSON,
                         "NUMBER": NERType.NUMBER}
 
+        self.__question_words = {"where", "who", "what", "when", "why", "whose", "which", "how"}
+
     def tokenize(self, string):
         output = self.__server.annotate(string, properties={
             'annotators': 'tokenize,pos,lemma,ner',
@@ -47,3 +49,7 @@ class EnglishLanguageModel(LanguageModel):
     def convert_ner(self, ner):
         ner = ner.upper()
         return self.ner_map.get(ner, None)
+
+    def is_question(self, tokens_list):
+        lemma = tokens_list[0].get_lemma()
+        return lemma in self.__question_words
