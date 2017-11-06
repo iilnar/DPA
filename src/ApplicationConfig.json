@@ -26,6 +26,27 @@
           ]
         }
       ]
+    },
+    {
+      "name": "Home",
+      "description": "App for home management",
+      "type": "Module",
+      "intents": [
+        {
+          "name": "Increase temperature",
+          "key_phrases": [
+            "increase"
+          ],
+          "parameters": [
+            {
+              "name": "temperature",
+              "data_type": "Number",
+              "obligatory": true,
+              "question": "How many degrees to change the temperature?"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
