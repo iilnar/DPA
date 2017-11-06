@@ -34,7 +34,7 @@ class Assistant:
                 param.append(token.get_word())
             url += "?q=" + "+".join(param)
             webbrowser.open(url, new=2)
-            answer = "Lets to know answer in Internet: " + url
+            answer = "Let's find out the answer in Internet: " + url
         else:
             # Here we must to handle questions and answers
             form = self.__stack.pop()
