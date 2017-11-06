@@ -36,10 +36,12 @@ class Assistant:
             webbrowser.open(url, new=2)
             answer = "Let's find out the answer in Internet: " + url
         else:
-            # Here we must to handle questions and answers
-            form = self.__stack.pop()
-            app = form.get_app()
-            answer = self.__process_intent(app, request_information, form)
+            if len(self.__stack) > 0:
+                form = self.__stack.pop()
+                app = form.get_app()
+                answer = self.__process_intent(app, request_information, form)
+            else:
+                answer = "Sorry, I didn't understand you. Please try it again"
 
         self.__history.append((user_request_str, answer))
         return answer
