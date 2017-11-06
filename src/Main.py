@@ -16,7 +16,7 @@ def start():
 
     print("For finish write 'exit'")
     request = input("Denis: ")
-    while (request != "exit"):
+    while request != "exit":
         try:
             answer = assistant.process_request(request)
             print("Masha: " + answer)
@@ -24,7 +24,6 @@ def start():
             print("Error:")
             print(e)
         request = input("User: ")
-
 
     assistant.stop()
 
