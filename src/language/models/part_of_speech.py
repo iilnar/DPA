@@ -6,4 +6,5 @@ class POS(Enum):
     VERB = "VERB",
     ADJ = "ADJ",
     CARDINAL_NUMBER = "CD",
+    PARTICLE = "RP",
     UNKOWN = "UNKOWN"

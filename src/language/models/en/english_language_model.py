@@ -11,9 +11,15 @@ class EnglishLanguageModel(LanguageModel):
     def __init__(self, config):
         self.__server = StanfordCoreNLP(config[CoreNLPServerAddress])
         self.pos_map = {"VB": POS.VERB,
-                        "NOUN": POS.NOUN,
+                        "VBD": POS.VERB,
+                        "VBN": POS.VERB,
+                        "VBP": POS.VERB,
+                        "NN": POS.NOUN,
+                        "NNS": POS.NOUN,
                         "ADJ": POS.ADJ,
-                        "CD": POS.CARDINAL_NUMBER}
+                        "CD": POS.CARDINAL_NUMBER,
+                        "RP": POS.PARTICLE
+                        }
 
         self.ner_map = {"DATE": NERType.DATE,
                         "PERSON": NERType.PERSON,
@@ -41,7 +47,22 @@ class EnglishLanguageModel(LanguageModel):
                 ner_type = self.convert_ner(ner_type)
                 token.set_NER_type(ner_type)
 
-        return token_list
+        temp_list = []
+        stop = len(token_list)
+        for i in range(stop - 1):
+            if token_list[i].get_pos() == POS.VERB and token_list[i + 1].get_pos() == POS.PARTICLE:
+                verb_token = token_list[i]
+                particle_token = token_list[i+1]
+                word = verb_token.get_word() + " " + particle_token.get_word()
+                lemma = verb_token.get_lemma() + " " + particle_token.get_lemma()
+                token = Token(word, lemma, verb_token.get_pos())
+                temp_list.append(token)
+            else:
+                temp_list.append(token_list[i])
+
+        if token_list[stop - 1].get_pos() != POS.PARTICLE:
+            temp_list.append(token_list[stop - 1])
+        return temp_list
 
     def convert_pos(self, pos_str):
         return self.pos_map.get(pos_str, POS.UNKOWN)
