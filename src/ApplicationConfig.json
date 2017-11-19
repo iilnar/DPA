@@ -30,10 +30,11 @@
     {
       "name": "Home",
       "description": "App for home management",
-      "type": "Module",
+      "type": "RemoteApp",
+      "url": "http://127.0.0.1:7878",
       "intents": [
         {
-          "name": "Increase temperature",
+          "name": "Set temperature",
           "key_phrases": [
             "increase"
           ],
@@ -42,7 +43,36 @@
               "name": "temperature",
               "data_type": "Number",
               "obligatory": true,
-              "question": "How many degrees to change the temperature?"
+              "question": "What temperature I should setup?"
+            }
+          ]
+        },
+        {
+          "name": "Turn on off",
+          "key_phrases": [
+            "Turn on",
+            "Turn off"
+          ],
+          "parameters": [
+            {
+              "name": "object",
+              "data_type": "str",
+              "obligatory": true,
+              "question": "What should I turn on?"
+            }
+          ]
+        },
+        {
+          "name": "Show dashboard",
+          "key_phrases": [
+            "Show"
+          ],
+          "parameters": [
+            {
+              "name": "sensor",
+              "data_type": "str",
+              "obligatory": true,
+              "question": "What sensor do you want to check?"
             }
           ]
         }
