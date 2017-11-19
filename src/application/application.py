@@ -28,8 +28,7 @@ class Application:
         return self.__description
 
     def get_intent(self, intent_name_str):
-        return self.__intents_dict[intent_name_str]
+        return self.__intents_dict.get(intent_name_str, None)
 
-    def process(self, intent, parameters):
-        pass
-
+    def get_name(self):
+        return self.__name

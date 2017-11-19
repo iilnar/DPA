@@ -2,11 +2,12 @@ from language.models.part_of_speech import POS
 from language.models.request_type import RequestType
 
 class RequestInformation:
-    def __init__(self, tokens_list, intent, rtype):
+    def __init__(self, tokens_list, intent, rtype, raw_request):
         self.__type = rtype
         self.__tokens_list = tokens_list
         self.__intent = intent
-        self.__app_name = None
+        self.__app_name_str = None
+        self.__raw_request = raw_request
 
     def get_type(self):
         return self.__type
@@ -18,10 +19,13 @@ class RequestInformation:
         return self.__intent
 
     def get_app_name(self):
-        return self.__app_name
+        return self.__app_name_str
 
     def set_app_name(self, name):
-        self.__app_name = name
+        self.__app_name_str = name
+
+    def get_raw_request(self):
+        return self.__raw_request
 
 
 class LanguageModel:
@@ -30,13 +34,15 @@ class LanguageModel:
         tokens_list = self.tokenize(string)
         is_question = self.is_question(tokens_list)
         if is_question:
-            obj = RequestInformation(tokens_list, None, rtype=RequestType.QUESTION)
+            obj = RequestInformation(tokens_list, None, rtype=RequestType.QUESTION, raw_request=string)
         else:
             verb = self.__find_first_verb(tokens_list)
             if verb is None:
-                obj = RequestInformation(tokens_list, None, rtype=RequestType.ANSWER)
+                obj = RequestInformation(tokens_list, None, rtype=RequestType.ANSWER, raw_request=string)
             else:
-                obj = RequestInformation(tokens_list, verb, rtype=RequestType.ACTION)
+                obj = RequestInformation(tokens_list, verb, rtype=RequestType.ACTION, raw_request=string)
+                app_name = self.__get_app_name(tokens_list)
+                obj.set_app_name(app_name)
         return obj
 
     def tokenize(self, string):
@@ -50,6 +56,9 @@ class LanguageModel:
             if token.get_pos() == POS.VERB:
                 return token
         return None
+
+    def __get_app_name(self, tokens_list):
+        return tokens_list[0].get_word()
 
     def convert_ner(self, ner):
         raise NotImplementedError()

@@ -6,6 +6,7 @@ from form.form import Form
 from language.models.request_type import RequestType
 from application.application import IntegrationType
 
+
 class Assistant:
     def __init__(self, language_model, application_dict, config):
         self.language_model = language_model
@@ -24,8 +25,11 @@ class Assistant:
             else:
                 lemma = request_information.get_intent().get_lemma()
                 intent_description = app.get_intent(lemma)
-                form = Form(app, intent_description)
-                answer = self.__process_intent(app, request_information, form)
+                if intent_description is None:
+                    answer = "Sorry, application '{0}' doesn't support action '{1}'".format(app.get_name(), lemma)
+                else:
+                    form = Form(app, intent_description)
+                    answer = self.__process_intent(app, request_information, form)
         elif type_rt == RequestType.QUESTION:
             url = self.__config[SearchAddress]
             tokens_list = request_information.get_tokens_list()
@@ -47,14 +51,9 @@ class Assistant:
         return answer
 
     def __extract_app(self, request_information):
-        lemma = request_information.get_intent().get_lemma()
-        app = None
-        if lemma == "remind":
-            app = self.application_dict["Calendar"]
-            request_information.set_app_name("Calendar")
-        elif lemma == "increase":
-            app = self.application_dict["Home"]
-            request_information.set_app_name("Home")
+        app_name = request_information.get_app_name()
+        app_name = app_name.lower()
+        app = self.application_dict[app_name]
         return app
 
     def __process_intent(self, app, request_information, form):
@@ -69,12 +68,14 @@ class Assistant:
     def __execute_request(self, app, parameters_dict):
         if app.get_integration_type() == IntegrationType.RemoteApp:
             url = app.get_endpoint_url()
-            answer = requests.post(url, data=parameters_dict)
-            if answer.status_code == 200:
-                answer = answer.json()
-                answer = "Done"
-            else:
-                answer = "Error"
+            try:
+                answer = requests.post(url, data=parameters_dict)
+                if answer.status_code == 200:
+                    answer = answer.json()
+                else:
+                    answer = "Error"
+            except Exception:
+                answer = "Sorry, service temporary doesn't work. Try it later."
         else:
             answer = "Done"
         return answer

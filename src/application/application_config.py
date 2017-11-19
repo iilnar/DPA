@@ -36,6 +36,7 @@ def load_config(path_str):
         for intent in app[APPLICATION_INTENTS_TAG]:
             intent_name = intent[INTENT_NAME_TAG]
             key_phrases_list = intent[INTENT_KEY_PHRASES_TAG]
+            key_phrases_list = [x.lower() for x in key_phrases_list]
             parameters_list = []
             for parameter in intent[INTENT_PARAMETERS_TAG]:
                 param_name = parameter[PARAMETER_NAME_TAG]
@@ -51,6 +52,6 @@ def load_config(path_str):
             intents.append(intent_ints)
 
         app_inst = Application(app_name, description, intents, integration_type=IntegrationType[type], url=URL)
-        app_dict[app_name] = app_inst
+        app_dict[app_name.lower()] = app_inst
 
     return app_dict
