@@ -1,10 +1,10 @@
 import webbrowser
 from pathlib import Path
-
+import requests
 from configs.config_constants import HistoryFilePath, SearchAddress
 from form.form import Form
 from language.models.request_type import RequestType
-
+from application.application import IntegrationType
 
 class Assistant:
     def __init__(self, language_model, application_dict, config):
@@ -67,7 +67,17 @@ class Assistant:
         return answer
 
     def __execute_request(self, app, parameters_dict):
-        return "Done"
+        if app.get_integration_type() == IntegrationType.RemoteApp:
+            url = app.get_endpoint_url()
+            answer = requests.post(url, data=parameters_dict)
+            if answer.status_code == 200:
+                answer = answer.json()
+                answer = "Done"
+            else:
+                answer = "Error"
+        else:
+            answer = "Done"
+        return answer
 
     def stop(self):
         path = Path(self.__config[HistoryFilePath])
