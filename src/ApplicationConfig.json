@@ -58,7 +58,8 @@
               "name": "object",
               "data_type": "str",
               "obligatory": true,
-              "question": "What should I turn on?"
+              "question": "What should I turn on?",
+              "regexp": ".* turn on ([a-zA-Z]+)"
             }
           ]
         },
@@ -72,7 +73,8 @@
               "name": "object",
               "data_type": "str",
               "obligatory": true,
-              "question": "What should I turn off?"
+              "question": "What should I turn off?",
+              "regexp": ".* turn off ([a-zA-Z]+)"
             }
           ]
         },
@@ -86,7 +88,8 @@
               "name": "sensor",
               "data_type": "str",
               "obligatory": true,
-              "question": "What sensor do you want to check?"
+              "question": "What sensor do you want to check?",
+              "regexp": ".* show ([a-zA-Z]+)"
             }
           ]
         }

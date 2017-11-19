@@ -1,6 +1,7 @@
 from application.data_type import DataType
 from language.models.named_entity_recognition import NERType
 
+
 class Form:
     def __init__(self, app, intent_description):
         self.__app = app
@@ -26,6 +27,12 @@ class Form:
                     elif dt == DataType.NUMBER and ner_type == NERType.NUMBER:
                         self.__parameters_value[param.get_name()] = token.get_word()
                         break
+                    elif dt == DataType.STR:
+                        req_exp = param.get_regexp()
+                        if req_exp is not None:
+                            result = req_exp.match(request_information.get_raw_request())
+                            if result is not None:
+                                self.__parameters_value[param.get_name()] = result.groups()[0]
 
         answer = None
         for param in parameters_list:

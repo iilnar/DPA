@@ -20,6 +20,7 @@ PARAMETER_NAME_TAG = "name"
 PARAMETER_TYPE_TAG = "data_type"
 PARAMETER_OBLIGATORY_TAG = "obligatory"
 PARAMETER_QUESTION_TAG = "question"
+PARAMETER_REGEXP_TAG = "regexp"
 
 
 def load_config(path_str):
@@ -43,9 +44,10 @@ def load_config(path_str):
                 param_data_type = parameter[PARAMETER_TYPE_TAG]
                 param_data_type = DataType[param_data_type.upper()]
                 param_obligatory = parameter[PARAMETER_OBLIGATORY_TAG]
+                param_regexp = parameter.get(PARAMETER_REGEXP_TAG, None)
                 param_question = parameter.get(PARAMETER_QUESTION_TAG, None)
                 param_inst = Parameter(param_name, param_data_type, obligatory_bool=param_obligatory,
-                                       question_str=param_question)
+                                       question_str=param_question, regexp=param_regexp)
                 parameters_list.append(param_inst)
 
             intent_ints = Intent(intent_name, key_phrases_list, parameters_list)
