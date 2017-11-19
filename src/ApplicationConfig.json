@@ -49,10 +49,9 @@
           ]
         },
         {
-          "name": "Turn on off",
+          "name": "Turn on",
           "key_phrases": [
-            "Turn on",
-            "Turn off"
+            "Turn on"
           ],
           "parameters": [
             {
@@ -60,6 +59,20 @@
               "data_type": "str",
               "obligatory": true,
               "question": "What should I turn on?"
+            }
+          ]
+        },
+        {
+          "name": "Turn off",
+          "key_phrases": [
+            "Turn off"
+          ],
+          "parameters": [
+            {
+              "name": "object",
+              "data_type": "str",
+              "obligatory": true,
+              "question": "What should I turn off?"
             }
           ]
         },
