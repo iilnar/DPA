@@ -1,7 +1,6 @@
 from application.data_type import DataType
 from language.models.named_entity_recognition import NERType
 
-
 class Form:
     def __init__(self, app, intent_description):
         self.__app = app
@@ -28,13 +27,17 @@ class Form:
                         self.__parameters_value[param.get_name()] = token.get_word()
                         break
 
+        answer = None
         for param in parameters_list:
             value = self.__parameters_value.get(param.get_name(), None)
             if value is None and param.is_obligatory():
-                return param.get_clarifying_question()
+                answer = param.get_clarifying_question()
+                break
 
-        self.__is_finish = True
-        return None
+        if answer is None:
+            self.__is_finish = True
+
+        return answer
 
     def is_finish(self):
         return self.__is_finish
