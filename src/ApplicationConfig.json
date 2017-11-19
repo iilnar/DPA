@@ -36,7 +36,8 @@
         {
           "name": "Set temperature",
           "key_phrases": [
-            "increase"
+            "set",
+            "set up"
           ],
           "parameters": [
             {
