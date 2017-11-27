@@ -7,6 +7,7 @@ class Form:
         self.__app = app
         self.__int_desc = intent_description
         self.__parameters_value = dict()
+        self.__parameters_value["Intent"] = intent_description.get_name()
         self.__is_finish = False
 
     def get_parameters_value(self):

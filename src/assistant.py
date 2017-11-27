@@ -1,10 +1,13 @@
 import webbrowser
 from pathlib import Path
+
 import requests
+
+from application.application import IntegrationType
 from configs.config_constants import HistoryFilePath, SearchAddress
+from configs.config_constants import IsStubMode
 from form.form import Form
 from language.models.request_type import RequestType
-from application.application import IntegrationType
 
 
 class Assistant:
@@ -14,6 +17,7 @@ class Assistant:
         self.__stack = []
         self.__history = []
         self.__config = config
+        self.__is_stub_mode = config[IsStubMode]
 
     def process_request(self, user_request_str):
         request_information = self.language_model.parse(user_request_str)
@@ -66,18 +70,23 @@ class Assistant:
         return answer
 
     def __execute_request(self, app, parameters_dict):
-        if app.get_integration_type() == IntegrationType.RemoteApp:
-            url = app.get_endpoint_url()
-            try:
-                answer = requests.post(url, data=parameters_dict)
-                if answer.status_code == 200:
-                    answer = answer.json()
-                else:
-                    answer = "Error"
-            except Exception:
-                answer = "Sorry, service temporary doesn't work. Try it later."
+        if not self.__is_stub_mode:
+            if app.get_integration_type() == IntegrationType.RemoteApp:
+                url = app.get_endpoint_url()
+                try:
+                    answer = requests.post(url, data=parameters_dict)
+                    if answer.status_code == 200:
+                        answer = answer.json()
+                    else:
+                        answer = "Error"
+                except Exception:
+                    answer = "Sorry, service temporary doesn't work. Try it later."
+            else:
+                answer = "Done"
         else:
-            answer = "Done"
+            answer = "AppName: " + app.get_name()
+            for key, value in parameters_dict.items():
+                answer += "| " + key + "=" + value
         return answer
 
     def stop(self):
