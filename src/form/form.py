@@ -1,5 +1,6 @@
 from application.data_type import DataType
 from language.models.named_entity_recognition import NERType
+from language.models.request_type import RequestType
 
 
 class Form:
@@ -34,6 +35,9 @@ class Form:
                             result = req_exp.match(request_information.get_raw_request())
                             if result is not None:
                                 self.__parameters_value[param.get_name()] = result.groups()[0]
+                        temp_value = self.__parameters_value.get(param.get_name(), None)
+                        if temp_value is None and request_information.get_type() == RequestType.ANSWER:
+                            self.__parameters_value[param.get_name()] = request_information.get_raw_request()
 
         answer = None
         for param in parameters_list:

@@ -20,7 +20,7 @@
             {
               "name": "Subject",
               "data_type": "str",
-              "obligatory": false,
+              "obligatory": true,
               "question": "What should I remind you?",
                "regexp": ".* remind .* to (.+)"
             }

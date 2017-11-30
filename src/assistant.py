@@ -22,6 +22,10 @@ class Assistant:
     def process_request(self, user_request_str):
         request_information = self.language_model.parse(user_request_str)
         type_rt = request_information.get_type()
+        # Костыль!
+        if type_rt == RequestType.ACTION and self.__extract_app(request_information) is None and len(self.__stack) > 0:
+            request_information.__intent = RequestType.QUESTION
+
         if type_rt == RequestType.ACTION:
             app = self.__extract_app(request_information)
             if app is None:
@@ -45,7 +49,7 @@ class Assistant:
             answer = "Let's find out the answer in Internet: " + url
         else:
             if len(self.__stack) > 0:
-                form = self.__stack.pop()
+                form = self.__stack.pop(0)
                 app = form.get_app()
                 answer = self.__process_intent(app, request_information, form)
             else:
@@ -57,7 +61,7 @@ class Assistant:
     def __extract_app(self, request_information):
         app_name = request_information.get_app_name()
         app_name = app_name.lower()
-        app = self.application_dict[app_name]
+        app = self.application_dict.get(app_name, None)
         return app
 
     def __process_intent(self, app, request_information, form):
