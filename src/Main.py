@@ -2,6 +2,7 @@ from configparser import ConfigParser
 from application.application_config import load_config
 from assistant import Assistant
 from language.models.en.english_language_model import EnglishLanguageModel
+import traceback
 
 
 def start():
@@ -20,9 +21,9 @@ def start():
         try:
             answer = assistant.process_request(request)
             print("Masha: " + answer)
-        except Exception as e:
+        except Exception:
             print("Error:")
-            print(e)
+            print(traceback.print_exc())
         request = input("User: ")
 
     assistant.stop()

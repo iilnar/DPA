@@ -12,6 +12,9 @@ class RequestInformation:
     def get_type(self):
         return self.__type
 
+    def set_type(self, rtype):
+        self.__type = rtype
+
     def get_tokens_list(self):
         return self.__tokens_list
 
