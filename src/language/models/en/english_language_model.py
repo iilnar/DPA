@@ -4,7 +4,7 @@ from configs.config_constants import CoreNLPServerAddress
 from language.models.named_entity_recognition import NERType
 from language.models.part_of_speech import POS
 from language.models.token import Token
-from src.language.models.LanguageModel import LanguageModel
+from language.models.LanguageModel import LanguageModel
 
 
 class EnglishLanguageModel(LanguageModel):
