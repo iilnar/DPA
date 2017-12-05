@@ -62,7 +62,25 @@ class EnglishLanguageModel(LanguageModel):
 
         if token_list[stop - 1].get_pos() != POS.PARTICLE:
             temp_list.append(token_list[stop - 1])
-        return temp_list
+
+        merge_list = []
+        pos = 0
+        while pos < len(temp_list):
+            if temp_list[pos].get_NER_type() != NERType.DATE:
+                merge_list.append(temp_list[pos])
+                pos += 1
+            else:
+                end_pos = pos
+                value = ""
+                while end_pos < len(temp_list) and temp_list[end_pos].get_NER_type() == NERType.DATE:
+                    value += temp_list[end_pos].get_word() + " "
+                    end_pos += 1
+                token = Token(value, value, POS.NOUN)
+                token.set_NER_type(NERType.DATE)
+                merge_list.append(token)
+                pos = end_pos
+
+        return merge_list
 
     def convert_pos(self, pos_str):
         return self.pos_map.get(pos_str, POS.UNKOWN)
