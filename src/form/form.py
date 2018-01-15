@@ -11,6 +11,7 @@ class Form:
         self.__parameters_value = dict()
         self.__parameters_value["Intent"] = intent_description.get_name()
         self.__is_finish = False
+        self.__expected_field = None
 
     def get_parameters_value(self):
         return self.__parameters_value
@@ -18,11 +19,13 @@ class Form:
     def process(self, request_information):
         token_list = request_information.get_tokens_list()
         parameters_list = self.__int_desc.get_parameters_list()
-        for param in parameters_list:
-            value = self.__parameters_value.get(param.get_name(), None)
-            if value is None:
-                dt = param.get_data_type()
-                for token in token_list:
+        for token in token_list:
+            for param in parameters_list:
+                if self.__expected_field is not None and param.get_name() != self.__expected_field:
+                    continue
+                value = self.__parameters_value.get(param.get_name(), None)
+                if value is None:
+                    dt = param.get_data_type()
                     ner_type = token.get_NER_type()
                     if dt == DataType.DATE and ner_type == NERType.DATE:
                         self.__parameters_value[param.get_name()] = token.get_word()
@@ -45,11 +48,12 @@ class Form:
             value = self.__parameters_value.get(param.get_name(), None)
             if value is None and param.is_obligatory():
                 answer = AssistantAnswer(None, message_str=param.get_clarifying_question())
+                self.__expected_field = param.get_name()
                 break
 
         if answer is None:
             self.__is_finish = True
-
+            self.__expected_field = None
         return answer
 
     def is_finish(self):

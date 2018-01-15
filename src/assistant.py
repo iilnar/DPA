@@ -27,7 +27,8 @@ class Assistant:
         type_rt = request_information.get_type()
         # Костыль!
         if type_rt == RequestType.ACTION and self.__extract_app(request_information) is None and len(self.__stack) > 0:
-            request_information.__intent = RequestType.QUESTION
+            request_information.set_type(RequestType.ANSWER)
+            type_rt = request_information.get_type()
 
         if type_rt == RequestType.ACTION:
             app = self.__extract_app(request_information)

@@ -20,7 +20,7 @@ def start():
     print("Assistant starts work")
 
     print("For finish write 'exit'")
-    request = input("Denis: ")
+    request = input("User: ")
     while request != "exit":
         try:
             answer = assistant.process_request(request)
