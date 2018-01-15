@@ -1,0 +1,5 @@
+DID_NOT_UNDERSTAND = "did_not_understand"
+NOT_SUPPORT_ACTION = "not_support_action"
+INTERNET_SEARCH = "internet_search"
+SERVICE_DOES_NOT_WORK = "service_does_not_work"
+ERROR_RESPONSE_CODE = "error_response_code"

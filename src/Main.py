@@ -11,8 +11,12 @@ def start():
     default_config = config_parser["DEFAULT"]
 
     language_model = EnglishLanguageModel(default_config)
+    config_parser = ConfigParser()
+    config_parser.read("language/models/en/message.ini", encoding="utf-8")
+    message_bundle = config_parser["DEFAULT"]
+
     app_dict = load_config("ApplicationConfig.json")
-    assistant = Assistant(language_model, app_dict, default_config)
+    assistant = Assistant(language_model, message_bundle, app_dict, default_config)
     print("Assistant starts work")
 
     print("For finish write 'exit'")

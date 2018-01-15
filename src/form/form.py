@@ -1,3 +1,4 @@
+from answer import AssistantAnswer
 from application.data_type import DataType
 from language.models.named_entity_recognition import NERType
 from language.models.request_type import RequestType
@@ -43,7 +44,7 @@ class Form:
         for param in parameters_list:
             value = self.__parameters_value.get(param.get_name(), None)
             if value is None and param.is_obligatory():
-                answer = param.get_clarifying_question()
+                answer = AssistantAnswer(None, message_str=param.get_clarifying_question())
                 break
 
         if answer is None:

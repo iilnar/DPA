@@ -3,6 +3,8 @@ from pathlib import Path
 
 import requests
 
+import language.models.message_constant as mc
+from answer import AssistantAnswer
 from application.application import IntegrationType
 from configs.config_constants import HistoryFilePath, SearchAddress
 from configs.config_constants import IsStubMode
@@ -11,13 +13,14 @@ from language.models.request_type import RequestType
 
 
 class Assistant:
-    def __init__(self, language_model, application_dict, config):
+    def __init__(self, language_model, message_bundle, application_dict, config):
         self.language_model = language_model
         self.application_dict = application_dict
         self.__stack = []
         self.__history = []
         self.__config = config
         self.__is_stub_mode = config[IsStubMode]
+        self.__message_bundle = message_bundle
 
     def process_request(self, user_request_str):
         request_information = self.language_model.parse(user_request_str)
@@ -29,12 +32,13 @@ class Assistant:
         if type_rt == RequestType.ACTION:
             app = self.__extract_app(request_information)
             if app is None:
-                answer = "Sorry, I didn't understand you. Please try it again"
+                answer = AssistantAnswer(mc.DID_NOT_UNDERSTAND)
             else:
                 lemma = request_information.get_intent().get_lemma()
                 intent_description = app.get_intent(lemma)
                 if intent_description is None:
-                    answer = "Sorry, application '{0}' doesn't support action '{1}'".format(app.get_name(), lemma)
+                    answer = AssistantAnswer(mc.NOT_SUPPORT_ACTION,
+                                             parameters_dict={"app_name": app.get_name(), "action": lemma})
                 else:
                     form = Form(app, intent_description)
                     answer = self.__process_intent(app, request_information, form)
@@ -46,17 +50,18 @@ class Assistant:
                 param.append(token.get_word())
             url += "?q=" + "+".join(param)
             webbrowser.open(url, new=2)
-            answer = "Let's find out the answer in Internet: " + url
+            answer = AssistantAnswer(mc.INTERNET_SEARCH, parameters_dict={"url": url})
         else:
             if len(self.__stack) > 0:
                 form = self.__stack.pop(0)
                 app = form.get_app()
                 answer = self.__process_intent(app, request_information, form)
             else:
-                answer = "Sorry, I didn't understand you. Please try it again"
+                answer = AssistantAnswer(mc.DID_NOT_UNDERSTAND)
 
-        self.__history.append((user_request_str, answer))
-        return answer
+        formated_answer = self.format_answer(answer)
+        self.__history.append((user_request_str, formated_answer))
+        return formated_answer
 
     def __extract_app(self, request_information):
         app_name = request_information.get_app_name()
@@ -78,19 +83,20 @@ class Assistant:
             if app.get_integration_type() == IntegrationType.RemoteApp:
                 url = app.get_endpoint_url()
                 try:
-                    answer = requests.post(url, data=parameters_dict)
-                    if answer.status_code == 200:
-                        answer = answer.json()
+                    response = requests.post(url, data=parameters_dict)
+                    if response.status_code == 200:
+                        answer = AssistantAnswer(None, message_str=response.json())
                     else:
-                        answer = "Error"
+                        answer = AssistantAnswer(mc.ERROR_RESPONSE_CODE, parameters_dict={"code": response.status_code})
                 except Exception:
-                    answer = "Sorry, service temporary doesn't work. Try it later."
+                    answer = AssistantAnswer(mc.SERVICE_DOES_NOT_WORK)
             else:
-                answer = "Done"
+                answer = AssistantAnswer(None, message_str="Done")
         else:
             answer = "AppName: " + app.get_name()
             for key, value in parameters_dict.items():
                 answer += "| " + key + "=" + value
+            answer = AssistantAnswer(None, message_str=answer)
         return answer
 
     def stop(self):
@@ -107,3 +113,11 @@ class Assistant:
         finally:
             if file is not None:
                 file.close()
+
+    def format_answer(self, answer):
+        if answer.message_key is not None:
+            message = self.__message_bundle[answer.message_key]
+            message = message.format(**answer.parameters)
+        else:
+            message = answer.message
+        return message
