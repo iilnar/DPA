@@ -51,6 +51,9 @@ class LanguageModel:
     def tokenize(self, string):
         raise NotImplementedError()
 
+    def get_language_name(self):
+        pass
+
     def __preprocess_text(self, string):
         return string
 

@@ -4,10 +4,13 @@ from configs.config_constants import CoreNLPServerAddress
 from language.models.named_entity_recognition import NERType
 from language.models.part_of_speech import POS
 from language.models.token import Token
-from language.models.LanguageModel import LanguageModel
+from language.models.language_model import LanguageModel
 
 
 class EnglishLanguageModel(LanguageModel):
+
+    __name = "English"
+
     def __init__(self, config):
         self.__server = StanfordCoreNLP(config[CoreNLPServerAddress])
         self.pos_map = {"VB": POS.VERB,
@@ -26,6 +29,9 @@ class EnglishLanguageModel(LanguageModel):
                         "NUMBER": NERType.NUMBER}
 
         self.__question_words = {"where", "who", "what", "when", "why", "whose", "which", "how"}
+
+    def get_language_name(self):
+        return EnglishLanguageModel.__name
 
     def tokenize(self, string):
         output = self.__server.annotate(string, properties={
