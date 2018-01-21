@@ -4,7 +4,7 @@ from assistant import Assistant
 from interface.console import Console
 from interface.telegram import Telegram
 from language.models.en.english_language_model import EnglishLanguageModel
-from configs.config_constants import InterfaceTypeKey, LogLevelKey
+from configs.config_constants import InterfaceTypeKey, LogLevelKey, IsStubMode
 import logging
 from threading import Thread
 
@@ -21,6 +21,8 @@ def start():
 
     logging.basicConfig(level=default_config[LogLevelKey],
                         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+    logging.info("Stub mode: {}".format(default_config[IsStubMode]))
 
     language_model = EnglishLanguageModel(default_config)
     logging.info("Selected {} language mode".format(language_model.get_language_name()))
