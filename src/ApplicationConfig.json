@@ -61,7 +61,7 @@
           ]
         },
         {
-          "name": "Turn on",
+          "name": "Turn on something",
           "key_phrases": [
             "Turn on"
           ],
@@ -76,7 +76,7 @@
           ]
         },
         {
-          "name": "Turn off",
+          "name": "Turn off something",
           "key_phrases": [
             "Turn off"
           ],
@@ -111,6 +111,7 @@
       "name": "ExplanationModule",
       "description": "Module for introduction itself",
       "type": "Module",
+      "impl": "moduls.self_introduction.SelfIntroductionModule",
       "intents": [
         {
           "name": "Ability demonstration",

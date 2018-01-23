@@ -10,7 +10,7 @@ from form.form import Form
 class Assistant:
     def __init__(self, language_model, message_bundle, application_dict, config, **kargs):
         self.language_model = language_model
-        self.application_dict = application_dict
+        self.__application_dict = application_dict
         self.__stack = []
         self.__history = []
         self.__config = config
@@ -40,7 +40,7 @@ class Assistant:
     def __extract_app(self, request_information):
         app_name = request_information.get_app_name()
         app_name = app_name.lower()
-        app = self.application_dict.get(app_name, None)
+        app = self.__application_dict.get(app_name, None)
         intent_description = None
         if app is None:
             temp_list = request_information.get_tokens_list()
@@ -49,7 +49,7 @@ class Assistant:
                 new_request_list.append(token.get_lemma())
 
             min_dist = float(self.__config[WMDThresholdKey])
-            for app_name, app_description in self.application_dict.items():
+            for app_name, app_description in self.__application_dict.items():
                 for intent in app_description.get_intents_list():
                     samples = intent.get_samples()
                     if samples is not None:
@@ -74,19 +74,19 @@ class Assistant:
         return answer
 
     def __execute_request(self, app, parameters_dict):
-        if not self.__is_stub_mode:
-            if app.get_integration_type() == IntegrationType.RemoteApp:
-                url = app.get_endpoint_url()
-                try:
-                    response = requests.post(url, data=parameters_dict)
-                    if response.status_code == 200:
-                        answer = AssistantAnswer(None, message_str=response.json())
-                    else:
-                        answer = AssistantAnswer(mc.ERROR_RESPONSE_CODE, parameters_dict={"code": response.status_code})
-                except Exception:
-                    answer = AssistantAnswer(mc.SERVICE_DOES_NOT_WORK)
-            else:
-                answer = AssistantAnswer(None, message_str="Done")
+        if app.get_integration_type() == IntegrationType.Module:
+            module = app.get_impl()
+            answer = module.run(self, parameters_dict)
+        elif not self.__is_stub_mode:
+            url = app.get_endpoint_url()
+            try:
+                response = requests.post(url, data=parameters_dict)
+                if response.status_code == 200:
+                    answer = AssistantAnswer(None, message_str=response.json())
+                else:
+                    answer = AssistantAnswer(mc.ERROR_RESPONSE_CODE, parameters_dict={"code": response.status_code})
+            except Exception:
+                answer = AssistantAnswer(mc.SERVICE_DOES_NOT_WORK)
         else:
             answer = "AppName: " + app.get_name()
             for key, value in parameters_dict.items():
@@ -118,3 +118,7 @@ class Assistant:
         else:
             message = answer.message
         return message
+
+    @property
+    def application_dict(self):
+        return self.__application_dict

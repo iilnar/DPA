@@ -13,6 +13,7 @@ class Application:
         self.__description = description_str
         self.__integration_type = integration_type
         self.__URL = url
+        self.__impl = None
         self.__intents_dict = dict()
         self.__intents_list = intents
         for intent in intents:
@@ -39,3 +40,9 @@ class Application:
 
     def get_name(self):
         return self.__name
+
+    def get_impl(self):
+        return self.__impl
+
+    def set_impl(self, impl):
+        self.__impl = impl

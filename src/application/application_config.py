@@ -1,4 +1,5 @@
 import json
+import importlib
 from application.application import Application
 from application.application import IntegrationType
 from application.intent import Intent
@@ -11,6 +12,7 @@ APPLICATION_DESCRIPTION_TAG = "description"
 APPLICATION_TYPE_TAG = "type"
 APPLICATION_ENDPOINT_URL_TAG = "url"
 APPLICATION_INTENTS_TAG = "intents"
+APPLICATION_IMPLEMENTATION = "impl"
 
 INTENT_NAME_TAG = "name"
 INTENT_KEY_PHRASES_TAG = "key_phrases"
@@ -61,6 +63,13 @@ def load_config(path_str, language_model):
             intents.append(intent_ints)
 
         app_inst = Application(app_name, description, intents, integration_type=IntegrationType[type], url=URL)
+
+        clazz = app.get(APPLICATION_IMPLEMENTATION, None)
+        if clazz is not None:
+            module_name, class_name = clazz.rsplit(".", 1)
+            MyClass = getattr(importlib.import_module(module_name), class_name)
+            app_inst.set_impl(MyClass())
+
         app_dict[app_name.lower()] = app_inst
 
     return app_dict
