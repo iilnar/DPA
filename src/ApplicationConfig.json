@@ -40,6 +40,17 @@
             "set",
             "set up"
           ],
+          "samples": [
+            "Set temperature",
+            "Set temperature on 10",
+            "Set up temperature",
+            "Change temperature",
+            "Change temperature at kitchen",
+            "Change temperature at living room",
+            "Change temperature in living room",
+            "Set up temperature on num_token",
+            "Set air temperature at num_token degree"
+          ],
           "parameters": [
             {
               "name": "temperature",
@@ -92,6 +103,26 @@
               "question": "What sensor do you want to check?",
               "regexp": ".* show ([a-zA-Z]+)"
             }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ExplanationModule",
+      "description": "Module for introduction itself",
+      "type": "Module",
+      "intents": [
+        {
+          "name": "Ability demonstration",
+          "samples": [
+            "What can you do",
+            "What can you",
+            "What commands do you know",
+            "What functions do you have",
+            "What can you do to help",
+            "How can you help",
+            "Show me your abilities",
+            "Show me your opportunities"
           ]
         }
       ]

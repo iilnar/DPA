@@ -14,6 +14,7 @@ class Application:
         self.__integration_type = integration_type
         self.__URL = url
         self.__intents_dict = dict()
+        self.__intents_list = intents
         for intent in intents:
             for phrase in intent.get_list_of_key_phrases():
                 self.__intents_dict[phrase] = intent
@@ -29,6 +30,12 @@ class Application:
 
     def get_intent(self, intent_name_str):
         return self.__intents_dict.get(intent_name_str, None)
+
+    def get_intents(self):
+        return self.__intents_dict
+
+    def get_intents_list(self):
+        return self.__intents_list
 
     def get_name(self):
         return self.__name

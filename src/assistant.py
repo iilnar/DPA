@@ -1,19 +1,14 @@
-import webbrowser
 from pathlib import Path
-
 import requests
-
 import language.models.message_constant as mc
 from answer import AssistantAnswer
 from application.application import IntegrationType
-from configs.config_constants import HistoryFilePath, SearchAddress
-from configs.config_constants import IsStubMode
+from configs.config_constants import HistoryFilePath, IsStubMode, WMDThresholdKey
 from form.form import Form
-from language.models.request_type import RequestType
 
 
 class Assistant:
-    def __init__(self, language_model, message_bundle, application_dict, config):
+    def __init__(self, language_model, message_bundle, application_dict, config, **kargs):
         self.language_model = language_model
         self.application_dict = application_dict
         self.__stack = []
@@ -21,44 +16,22 @@ class Assistant:
         self.__config = config
         self.__is_stub_mode = config[IsStubMode]
         self.__message_bundle = message_bundle
+        self.__w2v = kargs["w2v"]
 
     def process_request(self, user_request_str):
         request_information = self.language_model.parse(user_request_str)
-        type_rt = request_information.get_type()
-        # Костыль!
-        if type_rt == RequestType.ACTION and self.__extract_app(request_information) is None and len(self.__stack) > 0:
-            request_information.set_type(RequestType.ANSWER)
-            type_rt = request_information.get_type()
 
-        if type_rt == RequestType.ACTION:
-            app = self.__extract_app(request_information)
-            if app is None:
-                answer = AssistantAnswer(mc.DID_NOT_UNDERSTAND)
-            else:
-                lemma = request_information.get_intent().get_lemma()
-                intent_description = app.get_intent(lemma)
-                if intent_description is None:
-                    answer = AssistantAnswer(mc.NOT_SUPPORT_ACTION,
-                                             parameters_dict={"app_name": app.get_name(), "action": lemma})
-                else:
-                    form = Form(app, intent_description)
-                    answer = self.__process_intent(app, request_information, form)
-        elif type_rt == RequestType.QUESTION:
-            url = self.__config[SearchAddress]
-            tokens_list = request_information.get_tokens_list()
-            param = []
-            for token in tokens_list:
-                param.append(token.get_word())
-            url += "?q=" + "+".join(param)
-            webbrowser.open(url, new=2)
-            answer = AssistantAnswer(mc.INTERNET_SEARCH, parameters_dict={"url": url})
-        else:
+        app, intent_description = self.__extract_app(request_information)
+        if app is None or intent_description is None:
             if len(self.__stack) > 0:
                 form = self.__stack.pop(0)
                 app = form.get_app()
                 answer = self.__process_intent(app, request_information, form)
             else:
                 answer = AssistantAnswer(mc.DID_NOT_UNDERSTAND)
+        else:
+            form = Form(app, intent_description)
+            answer = self.__process_intent(app, request_information, form)
 
         formated_answer = self.format_answer(answer)
         self.__history.append((user_request_str, formated_answer))
@@ -68,7 +41,28 @@ class Assistant:
         app_name = request_information.get_app_name()
         app_name = app_name.lower()
         app = self.application_dict.get(app_name, None)
-        return app
+        intent_description = None
+        if app is None:
+            temp_list = request_information.get_tokens_list()
+            new_request_list = []
+            for token in temp_list:
+                new_request_list.append(token.get_lemma())
+
+            min_dist = float(self.__config[WMDThresholdKey])
+            for app_name, app_description in self.application_dict.items():
+                for intent in app_description.get_intents_list():
+                    samples = intent.get_samples()
+                    if samples is not None:
+                        for sample in samples:
+                            dist = self.__w2v.wmdistance(new_request_list, sample)
+                            if dist < min_dist:
+                                min_dist = dist
+                                app = app_description
+                                intent_description = intent
+        else:
+            lemma = request_information.get_intent().get_lemma()
+            intent_description = app.get_intent(lemma)
+        return app, intent_description
 
     def __process_intent(self, app, request_information, form):
         answer = form.process(request_information)

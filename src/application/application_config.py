@@ -14,6 +14,7 @@ APPLICATION_INTENTS_TAG = "intents"
 
 INTENT_NAME_TAG = "name"
 INTENT_KEY_PHRASES_TAG = "key_phrases"
+INTENT_SAMPLES_TAG = "samples"
 INTENT_PARAMETERS_TAG = "parameters"
 
 PARAMETER_NAME_TAG = "name"
@@ -21,9 +22,10 @@ PARAMETER_TYPE_TAG = "data_type"
 PARAMETER_OBLIGATORY_TAG = "obligatory"
 PARAMETER_QUESTION_TAG = "question"
 PARAMETER_REGEXP_TAG = "regexp"
+EMPTY_LIST = []
 
 
-def load_config(path_str):
+def load_config(path_str, language_model):
     with open(path_str) as data_file:
         data = json.load(data_file)
 
@@ -36,10 +38,15 @@ def load_config(path_str):
         intents = []
         for intent in app[APPLICATION_INTENTS_TAG]:
             intent_name = intent[INTENT_NAME_TAG]
-            key_phrases_list = intent[INTENT_KEY_PHRASES_TAG]
+            samples_list = intent.get(INTENT_SAMPLES_TAG, None)
+            if samples_list is not None:
+                samples_list = [get_lemmas(el, language_model) for el in samples_list]
+
+            key_phrases_list = intent.get(INTENT_KEY_PHRASES_TAG, EMPTY_LIST)
             key_phrases_list = [x.lower() for x in key_phrases_list]
             parameters_list = []
-            for parameter in intent[INTENT_PARAMETERS_TAG]:
+            param_description_list = intent.get(INTENT_PARAMETERS_TAG, EMPTY_LIST)
+            for parameter in param_description_list:
                 param_name = parameter[PARAMETER_NAME_TAG]
                 param_data_type = parameter[PARAMETER_TYPE_TAG]
                 param_data_type = DataType[param_data_type.upper()]
@@ -50,10 +57,18 @@ def load_config(path_str):
                                        question_str=param_question, regexp=param_regexp)
                 parameters_list.append(param_inst)
 
-            intent_ints = Intent(intent_name, key_phrases_list, parameters_list)
+            intent_ints = Intent(intent_name, key_phrases_list, parameters_list, samples=samples_list)
             intents.append(intent_ints)
 
         app_inst = Application(app_name, description, intents, integration_type=IntegrationType[type], url=URL)
         app_dict[app_name.lower()] = app_inst
 
     return app_dict
+
+
+def get_lemmas(text, language_model):
+    tokens = language_model.tokenize(text)
+    new_request_list = []
+    for token in tokens:
+        new_request_list.append(token.get_lemma())
+    return new_request_list

@@ -1,12 +1,13 @@
 from language.models.part_of_speech import POS
 from language.models.request_type import RequestType
+EMPTY_STRING = ""
 
 class RequestInformation:
     def __init__(self, tokens_list, intent, rtype, raw_request):
         self.__type = rtype
         self.__tokens_list = tokens_list
         self.__intent = intent
-        self.__app_name_str = None
+        self.__app_name_str = EMPTY_STRING
         self.__raw_request = raw_request
 
     def get_type(self):
@@ -35,17 +36,10 @@ class LanguageModel:
     def parse(self, string):
         string = self.__preprocess_text(string)
         tokens_list = self.tokenize(string)
-        is_question = self.is_question(tokens_list)
-        if is_question:
-            obj = RequestInformation(tokens_list, None, rtype=RequestType.QUESTION, raw_request=string)
-        else:
-            verb = self.__find_first_verb(tokens_list)
-            if verb is None:
-                obj = RequestInformation(tokens_list, None, rtype=RequestType.ANSWER, raw_request=string)
-            else:
-                obj = RequestInformation(tokens_list, verb, rtype=RequestType.ACTION, raw_request=string)
-                app_name = self.__get_app_name(tokens_list)
-                obj.set_app_name(app_name)
+        verb = self.__find_first_verb(tokens_list)
+        obj = RequestInformation(tokens_list, verb, rtype=RequestType.ACTION, raw_request=string)
+        app_name = self.__get_app_name(tokens_list)
+        obj.set_app_name(app_name)
         return obj
 
     def tokenize(self, string):

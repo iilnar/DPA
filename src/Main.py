@@ -4,9 +4,10 @@ from assistant import Assistant
 from interface.console import Console
 from interface.telegram import Telegram
 from language.models.en.english_language_model import EnglishLanguageModel
-from configs.config_constants import InterfaceTypeKey, LogLevelKey, IsStubMode
-import logging
+from configs.config_constants import InterfaceTypeKey, LogLevelKey, IsStubMode, W2VModelPathKey
+from gensim.models.keyedvectors import KeyedVectors
 from threading import Thread
+import logging
 
 STARTED_WORKING_MESSAGE = "Assistant started working"
 TELEGRAM = "telegram"
@@ -31,8 +32,12 @@ def start():
     config_parser.read("language/models/en/message.ini", encoding="utf-8")
     message_bundle = config_parser["DEFAULT"]
 
-    app_dict = load_config("ApplicationConfig.json")
-    assistant = Assistant(language_model, message_bundle, app_dict, default_config)
+    app_dict = load_config("ApplicationConfig.json", language_model)
+
+    print("Started initialization of Word2Vect")
+    w2v = KeyedVectors.load_word2vec_format(default_config[W2VModelPathKey], binary=True)
+    print("Making assistant")
+    assistant = Assistant(language_model, message_bundle, app_dict, default_config, w2v=w2v)
 
     interface_type = default_config[InterfaceTypeKey]
     interface_class = get_interface(interface_type)

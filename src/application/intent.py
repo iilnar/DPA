@@ -1,8 +1,9 @@
 class Intent:
-    def __init__(self, name_str, key_phrases_list, parameters_list):
+    def __init__(self, name_str, key_phrases_list, parameters_list, samples=None):
         self.__name = name_str
         self.__key_phrases_list = key_phrases_list
         self.__parameters_list = parameters_list
+        self.__samples_list = samples
 
     def get_name(self):
         return self.__name
@@ -12,3 +13,6 @@ class Intent:
 
     def get_parameters_list(self):
         return self.__parameters_list
+
+    def get_samples(self):
+        return self.__samples_list
