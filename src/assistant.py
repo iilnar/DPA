@@ -112,7 +112,9 @@ class Assistant:
     def format_answer(self, answer):
         if answer.message_key is not None:
             message = self.__message_bundle[answer.message_key]
-            message = message.format(**answer.parameters)
+            params = answer.parameters
+            if params is not None:
+                message = message.format(**params)
         else:
             message = answer.message
         return message
