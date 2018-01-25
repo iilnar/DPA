@@ -1,113 +1,6 @@
 {
   "applications": [
     {
-      "name": "Calendar",
-      "description": "App for calendar management",
-      "type": "Module",
-      "intents": [
-        {
-          "name": "Create remind",
-          "key_phrases": [
-            "remind"
-          ],
-          "parameters": [
-            {
-              "name": "Date",
-              "data_type": "Date",
-              "obligatory": true,
-              "question": "When should I remind you?"
-            },
-            {
-              "name": "Subject",
-              "data_type": "str",
-              "obligatory": true,
-              "question": "What should I remind you?",
-               "regexp": ".* remind .* to (.+)"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "name": "Home",
-      "description": "App for home management",
-      "type": "RemoteApp",
-      "url": "http://127.0.0.1:7878",
-      "intents": [
-        {
-          "name": "Set temperature",
-          "key_phrases": [
-            "set",
-            "set up"
-          ],
-          "samples": [
-            "Set temperature",
-            "Set temperature on 10",
-            "Set up temperature",
-            "Change temperature",
-            "Change temperature at kitchen",
-            "Change temperature at living room",
-            "Change temperature in living room",
-            "Set up temperature on num_token",
-            "Set air temperature at num_token degree"
-          ],
-          "parameters": [
-            {
-              "name": "temperature",
-              "data_type": "Number",
-              "obligatory": true,
-              "question": "What temperature I should setup?"
-            }
-          ]
-        },
-        {
-          "name": "Turn on something",
-          "key_phrases": [
-            "Turn on"
-          ],
-          "parameters": [
-            {
-              "name": "object",
-              "data_type": "str",
-              "obligatory": true,
-              "question": "What should I turn on?",
-              "regexp": ".* turn on ([a-zA-Z]+)"
-            }
-          ]
-        },
-        {
-          "name": "Turn off something",
-          "key_phrases": [
-            "Turn off"
-          ],
-          "parameters": [
-            {
-              "name": "object",
-              "data_type": "str",
-              "obligatory": true,
-              "question": "What should I turn off?",
-              "regexp": ".* turn off ([a-zA-Z]+)"
-            }
-          ]
-        },
-        {
-          "name": "Show dashboard",
-          "key_phrases": [
-            "Show"
-          ],
-          "parameters": [
-            {
-              "name": "sensor",
-              "data_type": "str",
-              "obligatory": true,
-              "question": "What sensor do you want to check?",
-              "regexp": ".* show ([a-zA-Z]+)"
-            }
-          ]
-        }
-      ]
-    },
-    {
       "name": "ExplanationModule",
       "description": "Module for introduction itself",
       "type": "Module",
@@ -124,6 +17,46 @@
             "How can you help",
             "Show me your abilities",
             "Show me your opportunities"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Matches game",
+      "description": "Module for playing in Matches game",
+      "type": "Module",
+      "impl": "moduls.games.MatchesGameModule",
+      "intents": [
+        {
+          "name": "Start Matches Game",
+          "samples": [
+            "Play in Matches game",
+            "Matches game",
+            "Lets fight in Matches game",
+            "Restart Matches game",
+            "Reset matches game",
+            "Lets play in Matches game"
+          ]
+        },
+        {
+          "name": "User turn",
+          "key_phrases": [
+            "1",
+            "2",
+            "3"
+          ],
+          "samples": [
+            "I am taking 2 matches",
+            "I am taking 1",
+            "I will take 3"
+          ],
+          "parameters": [
+            {
+              "name": "Amount",
+              "data_type": "number",
+              "obligatory": true,
+              "question": "How much matches do you want to take?"
+            }
           ]
         }
       ]
