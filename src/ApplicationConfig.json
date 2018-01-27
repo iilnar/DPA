@@ -115,6 +115,7 @@
       "intents": [
         {
           "name": "Ability demonstration",
+          "description": "Representation of assistant ability",
           "samples": [
             "What can you do",
             "What can you",
@@ -124,6 +125,15 @@
             "How can you help",
             "Show me your abilities",
             "Show me your opportunities"
+          ]
+        },
+        {
+          "name": "Say hi",
+          "description": "Module for welcome user",
+          "samples": [
+            "hi",
+            "hello",
+            "hey"
           ]
         }
       ]
