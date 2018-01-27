@@ -22,6 +22,43 @@
       ]
     },
     {
+      "name": "MathModule",
+      "description": "Module for solving math tasks",
+      "type": "Module",
+      "impl": "moduls.math_module.MathModule",
+      "intents": [
+        {
+          "name": "Welcome",
+          "samples": [
+            "Help me solve my math homework",
+            "Let's do math",
+            "I want to calculate",
+            "Help me to calculate",
+            "Solve an equation for me",
+            "Do some math for me",
+            "I need your help with math",
+            "Solve for me the next math task",
+            "Solve for me equation"
+          ]
+        },
+        {
+          "name": "Solving mathematical tasks",
+          "key_phrases":[
+            "solve"
+          ],
+          "parameters": [
+            {
+              "name": "Request",
+              "data_type": "str",
+              "obligatory": true,
+              "question": "What would you like to solve?",
+              "regexp": ".*(solve.+)$"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "name": "Matches game",
       "description": "Module for playing in Matches game",
       "type": "Module",
