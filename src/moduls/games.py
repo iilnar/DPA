@@ -13,7 +13,7 @@ class MatchesGameModule:
         answer = None
         if intent == "Start Matches Game":
             answer = self.start(assistant, parameters_dict)
-        elif intent == "User turn":
+        elif intent == "Turn":
             answer = self.turn(assistant, parameters_dict)
         return answer
 
@@ -22,6 +22,10 @@ class MatchesGameModule:
         self.amount_of_matches = 30
         self.is_started = True
         return AssistantAnswer("matches_game.start_game", {"matches": self.amount_of_matches})
+
+    @property
+    def is_active(self):
+        return self.is_started
 
     def turn(self, assistant, parameters_dict):
         answer = None
@@ -46,3 +50,31 @@ class MatchesGameModule:
                 answer = AssistantAnswer("matches_game.wrong_input_amount")
 
         return answer
+
+
+class TicTacToeModule:
+
+    def __init__(self):
+        self.is_started = False
+
+    @property
+    def is_active(self):
+        return self.is_started
+
+
+    def run(self, assistant, parameters_dict):
+        intent = parameters_dict["Intent"]
+        answer = None
+        if intent == "Start Tic-Tac-Toe Game":
+            answer = self.start(assistant, parameters_dict)
+        elif intent == "Turn":
+            answer = self.turn(assistant, parameters_dict)
+        return answer
+
+    def start(self, assistant, parameters_dict):
+        self.is_started = True
+        return AssistantAnswer(None, message_str="Start TicTacToe Game")
+
+    def turn(self, assistant, parameters_dict):
+        pos = parameters_dict["Position"]
+        return AssistantAnswer(None, message_str="User put label into {}".format(pos))

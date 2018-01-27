@@ -6,6 +6,8 @@ from application.application import IntegrationType
 from configs.config_constants import HistoryFilePath, IsStubMode, WMDThresholdKey
 from form.form import Form
 
+GAME_TURN_INTENT_NAME = "Turn"
+
 
 class Assistant:
     def __init__(self, language_model, message_bundle, application_dict, config, **kargs):
@@ -17,19 +19,31 @@ class Assistant:
         self.__is_stub_mode = config[IsStubMode]
         self.__message_bundle = message_bundle
         self.__w2v = kargs["w2v"]
+        self.__game_app = None
 
     def process_request(self, user_request_str):
         request_information = self.language_model.parse(user_request_str)
 
         app, intent_description = self.__extract_app(request_information)
+
         if app is None or intent_description is None:
             if len(self.__stack) > 0:
                 form = self.__stack.pop(0)
                 app = form.get_app()
                 answer = self.__process_intent(app, request_information, form)
+            elif self.__game_app is not None:
+                if self.__game_app.get_impl().is_active:
+                    app = self.__game_app
+                    intent_description = self.__game_app.get_intent_by_name(GAME_TURN_INTENT_NAME)
+                    form = Form(app, intent_description)
+                    answer = self.__process_intent(app, request_information, form)
+                else:
+                    answer = AssistantAnswer(mc.DID_NOT_UNDERSTAND)
             else:
                 answer = AssistantAnswer(mc.DID_NOT_UNDERSTAND)
         else:
+            if app.get_intent_by_name(GAME_TURN_INTENT_NAME) is not None:
+                self.__game_app = app
             form = Form(app, intent_description)
             answer = self.__process_intent(app, request_information, form)
 
