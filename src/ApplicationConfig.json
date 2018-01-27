@@ -102,6 +102,53 @@
           ]
         }
       ]
+    },
+    {
+      "name": "XO game",
+      "description": "Module for playing in XO game",
+      "type": "Module",
+      "impl": "moduls.games.XOModule",
+      "intents": [
+        {
+          "name": "Start XO Game",
+          "samples": [
+            "Play in XO game",
+            "XO game",
+            "Lets fight in XO game",
+            "Restart XO game",
+            "Restart XO",
+            "Reset XO game",
+            "Lets play in XO game",
+            "Play in XO game",
+            "XO game",
+            "Lets fight in XO game",
+            "Restart XO game",
+            "Reset XO game",
+            "Lets play in XO game",
+            "XO"
+          ],
+          "parameters": [
+            {
+              "name": "FieldSize",
+              "data_type": "number",
+              "obligatory": true,
+              "question": "What size field do you want to compete with me on?"
+            }
+          ]
+        },
+        {
+          "name": "Turn",
+          "parameters": [
+            {
+              "name": "Position",
+              "data_type": "str",
+              "obligatory": true,
+              "question": "Where do you want to put your label?",
+              "regexp": "([a-j] ?\\d{1,2}) ?"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

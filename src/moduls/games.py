@@ -78,3 +78,32 @@ class TicTacToeModule:
     def turn(self, assistant, parameters_dict):
         pos = parameters_dict["Position"]
         return AssistantAnswer(None, message_str="User put label into {}".format(pos))
+
+
+class XOModule:
+
+    def __init__(self):
+        self.is_started = False
+
+    @property
+    def is_active(self):
+        return self.is_started
+
+
+    def run(self, assistant, parameters_dict):
+        intent = parameters_dict["Intent"]
+        answer = None
+        if intent == "Start XO Game":
+            answer = self.start(assistant, parameters_dict)
+        elif intent == "Turn":
+            answer = self.turn(assistant, parameters_dict)
+        return answer
+
+    def start(self, assistant, parameters_dict):
+        self.is_started = True
+        size = int(parameters_dict["FieldSize"])
+        return AssistantAnswer(None, message_str="Start XO Game with field size {}".format(size))
+
+    def turn(self, assistant, parameters_dict):
+        pos = parameters_dict["Position"]
+        return AssistantAnswer(None, message_str="XO game: User put label into {}".format(pos))
