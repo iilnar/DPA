@@ -1,12 +1,13 @@
 import traceback
 import logging
 from configs.config_constants import StartMessageKey
+from assistant import Assistant
 
 
 class Console:
 
-    def __init__(self, assistant, message_bundle, config):
-        self.__assistant = assistant
+    def __init__(self, language_model, app_dict, w2v, message_bundle, config):
+        self.__assistant = Assistant(language_model, message_bundle, app_dict, config, w2v=w2v)
         self.__message_bundle = message_bundle
         self.__config = config
         self.__START_MESSAGE_KEY = self.__config[StartMessageKey]

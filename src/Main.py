@@ -1,6 +1,6 @@
 from configparser import ConfigParser
 from application.application_config import load_config
-from assistant import Assistant
+
 from interface.console import Console
 from interface.telegram import Telegram
 from language.models.en.english_language_model import EnglishLanguageModel
@@ -39,11 +39,10 @@ def start():
     is_binary_w2v = strtobool(default_config[W2VModelFileTypeKey])
     w2v = KeyedVectors.load_word2vec_format(default_config[W2VModelPathKey], binary=is_binary_w2v)
     print("Making assistant")
-    assistant = Assistant(language_model, message_bundle, app_dict, default_config, w2v=w2v)
 
     interface_type = default_config[InterfaceTypeKey]
     interface_class = get_interface(interface_type)
-    interface = interface_class(assistant, message_bundle, default_config)
+    interface = interface_class(language_model, app_dict, w2v, message_bundle, default_config)
 
     if interface_type == CONSOLE:
         print(STARTED_WORKING_MESSAGE)
