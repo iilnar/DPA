@@ -5,7 +5,7 @@ from answer import AssistantAnswer
 from application.application import IntegrationType
 from configs.config_constants import HistoryFilePath, IsStubMode, WMDThresholdKey
 from form.form import Form
-
+import importlib
 
 class Assistant:
     def __init__(self, language_model, message_bundle, application_dict, config, **kargs):
@@ -17,6 +17,7 @@ class Assistant:
         self.__is_stub_mode = config[IsStubMode]
         self.__message_bundle = message_bundle
         self.__w2v = kargs["w2v"]
+        self.__modules = {}
 
     def process_request(self, user_request_str):
         request_information = self.language_model.parse(user_request_str)
@@ -36,6 +37,15 @@ class Assistant:
         formated_answer = self.format_answer(answer)
         self.__history.append((user_request_str, formated_answer))
         return formated_answer
+
+    def __get_module_by_class_name(self, clazz):
+        module = self.__modules.get(clazz, None)
+        if module is None:
+            module_name, class_name = clazz.rsplit(".", 1)
+            MyClass = getattr(importlib.import_module(module_name), class_name)
+            module = MyClass()
+            self.__modules[clazz] = module
+        return module
 
     def __extract_app(self, request_information):
         app_name = request_information.get_app_name()
@@ -75,7 +85,8 @@ class Assistant:
 
     def __execute_request(self, app, parameters_dict):
         if app.get_integration_type() == IntegrationType.Module:
-            module = app.get_impl()
+            class_name = app.get_impl()
+            module = self.__get_module_by_class_name(class_name)
             answer = module.run(self, parameters_dict)
         elif not self.__is_stub_mode:
             url = app.get_endpoint_url()

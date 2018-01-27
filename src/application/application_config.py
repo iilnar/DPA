@@ -66,9 +66,7 @@ def load_config(path_str, language_model):
 
         clazz = app.get(APPLICATION_IMPLEMENTATION, None)
         if clazz is not None:
-            module_name, class_name = clazz.rsplit(".", 1)
-            MyClass = getattr(importlib.import_module(module_name), class_name)
-            app_inst.set_impl(MyClass())
+            app_inst.set_impl(clazz)
 
         app_dict[app_name.lower()] = app_inst
 
