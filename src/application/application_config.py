@@ -18,6 +18,7 @@ INTENT_NAME_TAG = "name"
 INTENT_KEY_PHRASES_TAG = "key_phrases"
 INTENT_SAMPLES_TAG = "samples"
 INTENT_PARAMETERS_TAG = "parameters"
+INTENT_DESCRIPTION_TAG = "description"
 
 PARAMETER_NAME_TAG = "name"
 PARAMETER_TYPE_TAG = "data_type"
@@ -59,7 +60,8 @@ def load_config(path_str, language_model):
                                        question_str=param_question, regexp=param_regexp)
                 parameters_list.append(param_inst)
 
-            intent_ints = Intent(intent_name, key_phrases_list, parameters_list, samples=samples_list)
+            intent_desc = intent.get(INTENT_DESCRIPTION_TAG, None)
+            intent_ints = Intent(intent_name, key_phrases_list, parameters_list, samples=samples_list, description=intent_desc)
             intents.append(intent_ints)
 
         app_inst = Application(app_name, description, intents, integration_type=IntegrationType[type], url=URL)
