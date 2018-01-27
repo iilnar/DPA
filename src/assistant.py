@@ -7,6 +7,7 @@ from configs.config_constants import HistoryFilePath, IsStubMode, WMDThresholdKe
 from form.form import Form
 import importlib
 
+
 class Assistant:
     def __init__(self, language_model, message_bundle, application_dict, config, **kargs):
         self.language_model = language_model
@@ -17,6 +18,7 @@ class Assistant:
         self.__is_stub_mode = config[IsStubMode]
         self.__message_bundle = message_bundle
         self.__w2v = kargs["w2v"]
+        self.__user_id = kargs.get("user_id", "console")
         self.__modules = {}
 
     def process_request(self, user_request_str):
@@ -106,7 +108,7 @@ class Assistant:
         return answer
 
     def stop(self):
-        path = Path(self.__config[HistoryFilePath])
+        path = Path(self.__config[HistoryFilePath].format(self.__user_id))
         file = None
         try:
             if path.exists():
