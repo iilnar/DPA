@@ -63,7 +63,7 @@ class Assistant:
         if module is None:
             module_name, class_name = clazz.rsplit(".", 1)
             MyClass = getattr(importlib.import_module(module_name), class_name)
-            module = MyClass()
+            module = MyClass(self.__config)
             self.__modules[clazz] = module
         return module
 

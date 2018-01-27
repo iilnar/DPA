@@ -4,7 +4,7 @@ import random
 
 class MatchesGameModule:
 
-    def __init__(self):
+    def __init__(self, config):
         self.amount_of_matches = 0
         self.is_started = False
 
@@ -54,7 +54,7 @@ class MatchesGameModule:
 
 class TicTacToeModule:
 
-    def __init__(self):
+    def __init__(self, config):
         self.is_started = False
 
     @property
@@ -82,7 +82,7 @@ class TicTacToeModule:
 
 class XOModule:
 
-    def __init__(self):
+    def __init__(self, config):
         self.is_started = False
 
     @property
