@@ -93,6 +93,14 @@
             "Restart Matches game",
             "Reset matches game",
             "Lets play in Matches game"
+          ],
+          "parameters": [
+            {
+              "name": "AmountOfMatches",
+              "data_type": "number",
+              "obligatory": false,
+              "question": "How much matches do you want to see on board?"
+            }
           ]
         },
         {
