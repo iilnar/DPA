@@ -42,8 +42,6 @@
           "samples": [
             "Help me solve my math homework",
             "Let's do math",
-            "I want to calculate",
-            "Help me to calculate",
             "Solve an equation for me",
             "Do some math for me",
             "I need your help with math",
@@ -54,7 +52,18 @@
         {
           "name": "Solving mathematical tasks",
           "key_phrases":[
+            "math",
+            "calculate",
             "solve"
+          ],
+          "samples": [
+            "I want to calculate",
+            "Help me to calculate",
+            "calculate 1 + 5",
+            "calculate 2 - 6",
+            "calculate 3 * 7",
+            "calculate 4 / 8",
+            "calculate 0 = 9"
           ],
           "parameters": [
             {
@@ -62,7 +71,8 @@
               "data_type": "str",
               "obligatory": true,
               "question": "What would you like to solve?",
-              "regexp": ".*(solve.+)$"
+              "regexp": "(.*math (.+)$)|(.*calculate (.+)$)|(.*solve (.+)$)",
+              "reqexp_group_id": [1,3,5]
             }
           ]
         }
