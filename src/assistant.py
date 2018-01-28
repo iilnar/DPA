@@ -35,7 +35,7 @@ class Assistant:
                 app = form.get_app()
                 answer = self.__process_intent(app, request_information, form)
             elif self.__game_app is not None:
-                class_name = app.get_impl()
+                class_name = self.__game_app.get_impl()
                 module = self.__get_module_by_class_name(class_name)
                 if module.is_active:
                     app = self.__game_app
