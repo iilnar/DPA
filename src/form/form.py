@@ -38,7 +38,13 @@ class Form:
                         if req_exp is not None:
                             result = req_exp.match(request_information.get_raw_request())
                             if result is not None:
-                                self.__parameters_value[param.get_name()] = result.groups()[0]
+                                id_list = param.group_ids
+                                groups = result.groups()
+                                for g_id in id_list:
+                                    element = groups[g_id]
+                                    if element is not None:
+                                        self.__parameters_value[param.get_name()] = element
+                                        break
                         temp_value = self.__parameters_value.get(param.get_name(), None)
                         if temp_value is None and request_information.get_type() == RequestType.ANSWER:
                             self.__parameters_value[param.get_name()] = request_information.get_raw_request()
