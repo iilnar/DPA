@@ -56,7 +56,7 @@ class Assistant:
             answer = AssistantAnswer(mc.DID_NOT_UNDERSTAND)
         formated_answer = self.format_answer(answer)
         self.__history.append((user_request_str, formated_answer))
-        return formated_answer
+        return answer
 
     def __get_module_by_class_name(self, clazz):
         module = self.__modules.get(clazz, None)
