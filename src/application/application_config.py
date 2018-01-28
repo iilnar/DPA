@@ -25,6 +25,7 @@ PARAMETER_TYPE_TAG = "data_type"
 PARAMETER_OBLIGATORY_TAG = "obligatory"
 PARAMETER_QUESTION_TAG = "question"
 PARAMETER_REGEXP_TAG = "regexp"
+PARAMETER_REGEXP_GROUP_TAG = "reqexp_group_id"
 EMPTY_LIST = []
 
 
@@ -55,9 +56,11 @@ def load_config(path_str, language_model):
                 param_data_type = DataType[param_data_type.upper()]
                 param_obligatory = parameter[PARAMETER_OBLIGATORY_TAG]
                 param_regexp = parameter.get(PARAMETER_REGEXP_TAG, None)
+                param_regexp_group = parameter.get(PARAMETER_REGEXP_GROUP_TAG, None)
                 param_question = parameter.get(PARAMETER_QUESTION_TAG, None)
                 param_inst = Parameter(param_name, param_data_type, obligatory_bool=param_obligatory,
-                                       question_str=param_question, regexp=param_regexp)
+                                       question_str=param_question, regexp=param_regexp,
+                                       regexp_group=param_regexp_group)
                 parameters_list.append(param_inst)
 
             intent_desc = intent.get(INTENT_DESCRIPTION_TAG, None)
