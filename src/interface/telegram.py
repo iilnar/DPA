@@ -39,7 +39,9 @@ class Telegram(BaseInterface):
         logging.info(ASSISTANT_ANSWERS_PATTERN.format(user_id, message))
         bot.sendMessage(update.message.chat_id, text=message)
         if answer.picture is not None:
-            bot.sendPhoto(update.message.chat_id, photo=answer.picture)
+            image = answer.picture
+            if hasattr(image, 'read'):
+                bot.sendPhoto(update.message.chat_id, photo=image)
 
     def slash_start(self, bot, update):
         bot.sendMessage(update.message.chat_id, text=self.message_bundle[self.__START_MESSAGE_KEY])

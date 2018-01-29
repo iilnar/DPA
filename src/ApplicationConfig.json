@@ -125,7 +125,7 @@
       "name": "TicTacToe game",
       "description": "Module for playing in TicTacToe game",
       "type": "Module",
-      "impl": "moduls.games.TicTacToeModule",
+      "impl": "moduls.tic_tac_toe.TicTacToeModule",
       "intents": [
         {
           "name": "Start Tic-Tac-Toe Game",
@@ -146,14 +146,6 @@
             "Tic-Tac-Toe",
             "I want to play tic-tac-toe game",
             "I want to play TicTacToe game"
-          ],
-          "parameters": [
-            {
-              "name": "FieldSize",
-              "data_type": "number",
-              "obligatory": true,
-              "question": "How big field do you want? 3 or 5 cell?"
-            }
           ]
         },
         {
