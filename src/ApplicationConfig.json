@@ -166,7 +166,7 @@
       "name": "XO game",
       "description": "Module for playing in XO game",
       "type": "Module",
-      "impl": "moduls.games.XOModule",
+      "impl": "moduls.five_in_row_game.XOModule",
       "intents": [
         {
           "name": "Start XO Game",
@@ -185,14 +185,6 @@
             "Reset XO game",
             "Lets play in XO game",
             "XO"
-          ],
-          "parameters": [
-            {
-              "name": "FieldSize",
-              "data_type": "number",
-              "obligatory": true,
-              "question": "What size field do you want to compete with me on?"
-            }
           ]
         },
         {
