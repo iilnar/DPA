@@ -4,8 +4,8 @@ from assistant import Assistant
 from interface.base_interface import BaseInterface
 import logging
 
-USER_ASKS_PATTERN = "User {} asks: '{}'"
-ASSISTANT_ANSWERS_PATTERN = "Answer for user {}: '{}'"
+USER_ASKS_PATTERN = "User {} {} asks: '{}'"
+ASSISTANT_ANSWERS_PATTERN = "Answer for user {} {}: '{}'"
 STOP_MESSAGE_KEY = "stop_message_key"
 
 class Telegram(BaseInterface):
@@ -30,8 +30,9 @@ class Telegram(BaseInterface):
         request = update.message.text.strip()
         user_id = update.message.chat_id
         does_print = bool(self.config[PrintMessages])
+        user_name = update.message.from_user.username
         if does_print:
-            print((USER_ASKS_PATTERN.format(user_id, request)))
+            print((USER_ASKS_PATTERN.format(user_id, user_name, request)))
         assistant = self.__user_assistant_dict.get(user_id, None)
         if assistant is None:
             assistant = Assistant(self.__language_model, self.message_bundle, self.__app_dict,
@@ -40,7 +41,7 @@ class Telegram(BaseInterface):
         answer = assistant.process_request(request)
         message = self.format_answer(answer)
         if does_print:
-            print(ASSISTANT_ANSWERS_PATTERN.format(user_id, message))
+            print(ASSISTANT_ANSWERS_PATTERN.format(user_id, user_name, message))
         bot.sendMessage(update.message.chat_id, text=message)
         if answer.picture is not None:
             image = answer.picture
