@@ -142,7 +142,7 @@ class TicTacToe:
             return GameStatus.DRAW, "Board is full"
         if TicTacToe.is_winnable(self.board, self.n):
             return GameStatus.PLAYING, None
-        return GameStatus.DRAW , None
+        return GameStatus.PLAYING, None
 
 
     def make_move(self, xy, player):
