@@ -6,7 +6,7 @@ import logging
 
 USER_ASKS_PATTERN = "User {} asks: '{}'"
 ASSISTANT_ANSWERS_PATTERN = "Answer for user {}: '{}'"
-
+STOP_MESSAGE_KEY = "stop_message_key"
 
 class Telegram(BaseInterface):
 
@@ -23,6 +23,7 @@ class Telegram(BaseInterface):
         self.__updater = Updater(self.__token)
         dp = self.__updater.dispatcher
         dp.add_handler(CommandHandler("start", self.slash_start), group=0)
+        dp.add_handler(CommandHandler("stop", self.slash_stop), group=0)
         dp.add_handler(MessageHandler(Filters.text, self.idle_main))
 
     def idle_main(self, bot, update):
@@ -48,6 +49,13 @@ class Telegram(BaseInterface):
 
     def slash_start(self, bot, update):
         bot.sendMessage(update.message.chat_id, text=self.message_bundle[self.__START_MESSAGE_KEY])
+
+    def slash_stop(self, bot, update):
+        user_id = update.message.chat_id
+        assistant = self.__user_assistant_dict.get(user_id, None)
+        if assistant is not None:
+            del self.__user_assistant_dict[user_id]
+            bot.sendMessage(update.message.chat_id, text=self.message_bundle[STOP_MESSAGE_KEY])
 
     def start(self):
         self.__updater.start_polling()
