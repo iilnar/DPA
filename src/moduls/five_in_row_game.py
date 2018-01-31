@@ -325,9 +325,26 @@ class XO:
 
         return found
 
+    def basic_search(self, board, player, move_y, move_x):
+        max_score = -MAX_SCORE
+
+        for j in range(len(board)):
+            for i in range(len(board[j])):
+                if board[j][i] == ".":
+                    board[j][i] = player
+                    score = self.get_heuristic(board, player)
+                    if score > max_score:
+                        max_score = score
+                        move_y, move_x = j, i
+                    board[j][i] = "."
+
+        return move_y, move_x
+
     def ai_move(self):
         aux_board = self.board
         score, move_y, move_x = self.alpha_beta_search(aux_board, -1, -1, 2, -MAX_SCORE * self.__field_size, MAX_SCORE * self.__field_size, True, "X")
+        if not self.check_bounder(move_y, move_x):
+            move_y, move_x = self.basic_search(self.board, "X", move_y, move_x)
         self.board[move_y][move_x] = "X"
 
     def check_bounder(self, y, x):
