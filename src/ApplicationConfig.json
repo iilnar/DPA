@@ -17,7 +17,10 @@
             "What can you do to help",
             "How can you help",
             "Show me your abilities",
-            "Show me your opportunities"
+            "Show me your opportunities",
+            "Help",
+            "Ok, so what can you do?",
+            "Tell me about your self"
           ]
         },
         {
@@ -92,7 +95,8 @@
             "Lets fight in Matches game",
             "Restart Matches game",
             "Reset matches game",
-            "Lets play in Matches game"
+            "Lets play in Matches game",
+            "Lets play in matches"
           ],
           "parameters": [
             {
@@ -143,6 +147,7 @@
             "Reset TicTacToe game",
             "Lets play in TicTacToe game",
             "TicTacToe",
+            "Tic Tac Toe",
             "Tic-Tac-Toe",
             "I want to play tic-tac-toe game",
             "I want to play TicTacToe game"
