@@ -1,5 +1,5 @@
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-from configs.config_constants import StartMessageKey, TokenKey
+from configs.config_constants import StartMessageKey, TokenKey, PrintMessages
 from assistant import Assistant
 from interface.base_interface import BaseInterface
 import logging
@@ -28,7 +28,9 @@ class Telegram(BaseInterface):
     def idle_main(self, bot, update):
         request = update.message.text.strip()
         user_id = update.message.chat_id
-        logging.info(USER_ASKS_PATTERN.format(user_id, request))
+        does_print = bool(self.config[PrintMessages])
+        if does_print:
+            print((USER_ASKS_PATTERN.format(user_id, request)))
         assistant = self.__user_assistant_dict.get(user_id, None)
         if assistant is None:
             assistant = Assistant(self.__language_model, self.message_bundle, self.__app_dict,
@@ -36,7 +38,8 @@ class Telegram(BaseInterface):
             self.__user_assistant_dict[user_id] = assistant
         answer = assistant.process_request(request)
         message = self.format_answer(answer)
-        logging.info(ASSISTANT_ANSWERS_PATTERN.format(user_id, message))
+        if does_print:
+            print(ASSISTANT_ANSWERS_PATTERN.format(user_id, message))
         bot.sendMessage(update.message.chat_id, text=message)
         if answer.picture is not None:
             image = answer.picture
