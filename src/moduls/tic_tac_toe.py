@@ -33,7 +33,13 @@ class TicTacToeModule:
         self.is_started = True
         self.__game = TicTacToeLogic(font_path=self.__config[TicTacToeFontPath])
         board = self.__game.get_image_board()
-        return AssistantAnswer(None, message_str="Start TicTacToe Game", picture=board)
+        param = dict()
+        param["label"] = self.__game.plr_fig
+        if self.__game.is_bot_first:
+            message_key = "tictactoe.start_game_key.bot_turn"
+        else:
+            message_key = "tictactoe.start_game_key.user_turn"
+        return AssistantAnswer(message_key, param, picture=board)
 
     def turn(self, assistant, parameters_dict):
         pos = parameters_dict["Position"].lower()
@@ -237,16 +243,16 @@ class TicTacToeLogic:
 
     _FIGURES = ["X", "O"]
     def __init__(self, n=3, font_path=""):
-        is_bot_first = random.randint(0, 1)
+        self.is_bot_first = random.randint(0, 1)
 
         self.__field_size = n
-        self.plr_fig = self._FIGURES[is_bot_first]
+        self.plr_fig = self._FIGURES[self.is_bot_first]
         self.state = TicTacToe(self.__field_size)
         self.bot = CleverBot(self.__field_size)
-        self.bot_fig = self._FIGURES[1-is_bot_first]
+        self.bot_fig = self._FIGURES[1-self.is_bot_first]
         self.image = Board(n, font_path)
 
-        if is_bot_first:
+        if self.is_bot_first:
             bot_xy = self.bot.move(deepcopy(self.state.board), self.bot_fig)
             self._move_with_player(bot_xy, self.bot_fig)
 

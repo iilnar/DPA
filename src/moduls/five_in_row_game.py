@@ -35,7 +35,11 @@ class XOModule:
         self.is_started = True
         self.__game = XOLogics(font_path=self.__config[TicTacToeFontPath])
         board = self.__game.get_image_board()
-        return AssistantAnswer("XO_start_message", picture=board)
+        if self.__game.is_bot_first:
+            message_key = "XO.start_game_key.bot_turn"
+        else:
+            message_key = "XO.start_game_key.user_turn"
+        return AssistantAnswer(message_key, picture=board)
 
     def turn(self, assistant, parameters_dict):
         pos = parameters_dict["Position"].lower()
@@ -67,11 +71,11 @@ class XOLogics:
     _FIGURES = ["X", "O"]
 
     def __init__(self, field_size=10, font_path=""):
-        is_bot_first = random.randint(0, 1)
+        self.is_bot_first = random.randint(0, 1)
         self.__field_size = field_size
         self.status = GameStatus.PLAYING
         self.state = XO(font_path=font_path)
-        if is_bot_first:
+        if self.is_bot_first:
             self.ai_move()
 
     def move(self, pos):

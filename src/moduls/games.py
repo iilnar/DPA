@@ -1,5 +1,5 @@
 from answer import AssistantAnswer
-
+import random
 
 class MatchesBot:
     def move(self, left):
@@ -28,7 +28,16 @@ class MatchesGameModule:
     def start(self, assistant, parameters_dict):
         self.amount_of_matches = int(parameters_dict.get("AmountOfMatches", 30))
         self.is_started = True
-        return AssistantAnswer("matches_game.start_game", {"matches": self.amount_of_matches})
+        is_bot_first = random.randint(0, 1)
+        if is_bot_first:
+            bot_choice = self.bot.move(self.amount_of_matches)
+            was_matches = self.amount_of_matches
+            self.amount_of_matches -= bot_choice
+            param = {"matches": was_matches, "amount": bot_choice}
+            answer = AssistantAnswer("matches_game.start_game.bot_first", param)
+        else:
+            answer = AssistantAnswer("matches_game.start_game.user_first", {"matches": self.amount_of_matches})
+        return answer
 
     @property
     def is_active(self):
